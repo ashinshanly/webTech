@@ -1,0 +1,31 @@
+body {
+  
+	background-color: lightblue;
+}
+
+table {
+
+  	font-family: verdana;
+  
+	font-size: 30px;
+}
+
+div {
+  
+	position: absolute;
+  
+	top: 200px;
+  
+	right: 400px;
+  
+	width: 450px;
+  
+	height: 250px;
+
+	text-align: center;
+
+	text-align: middle;
+
+	background-color: red;
+}
+
