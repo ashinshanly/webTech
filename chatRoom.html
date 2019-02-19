@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<script src="chatRoom.js"></script>
+	</head>
+
+	<body>
+
+		<p><b>Create a new Chat Room</b></p>
+
+		<form>
+			Name of the Chat Room: <input name="chatRoom" type="text">
+
+			Size of the message: <input name="msgSize" type="text">
+
+			<button type="button" onclick="creatChatRoom (chatRoom.value, Number(msgSize.value))">Create!</button>
+
+		</form>
+
+		<p>Status: <span id="status"></span></p>
+
+	</body>
+</html> 
