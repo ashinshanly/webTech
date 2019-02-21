@@ -1,71 +1,69 @@
 <?php
-
-   	function stream_fifo_open ($fifoPath, $mode, $operation) {
+   	function stream_fifo_open ($fifoPath, $operation) {
         
-		if (! file_exists($fifoPath)) {             
-
-			posix_mkfifo($fifoPath, $mode);
-        	} 
-
-        	$fifo = fopen($fifoPath, $operation);
+        	$fifo = fopen($fifoPath, $operation) or die("Unable to open file!");
 
 		return $fifo;
     	}
 
-	interface Communication {
-    
-		public function receive();
-
-    		public function send();
-
-		public function clear();
-	}
-
-	class FIFOCommunication implements Communication {
+	class FIFOCommunication {
 
 		public $chatRoom;
+
+		public $msgSize; 
     
 		public $readHead;
 
-		public $writeHead; 
+		public $writeHead;   	
 
-		public $msgSize;   		
+		public function __construct ($_chatRoom = NULL, $_msgSize = 0, $_type = NULL) {
 
-		public $msgToSend;
-
-		public $msgReceived;
-
- 		public function __construct ($_chatRoom, $_msgSize) {
-
-			$chatRoom = $_chatRoom;
+			$this->chatRoom = $_chatRoom;
 			
-			$msgSize = $_msgSize; 
+			$this->msgSize = $_msgSize; 
 
-			$msgReceived = '';
+			if ($_type === "primary") {
 
-			$msgToSend = '';	
+				$this->writeHead = stream_fifo_open ('temp'.$this->chatRoom.'write.txt', 'w');
 
-			$readHead = stream_fifo_open ($chatRoom.'read', '7777', 'r');
+				$this->readHead = stream_fifo_open ('temp'.$this->chatRoom.'read.txt', 'r');
 
-			$writeHead = stream_fifo_open ($chatRoom.'write', '7777', 'w');
+			} else {
+
+				$this->writeHead = stream_fifo_open ('temp'.$this->chatRoom.'read.txt', 'w');
+
+				$this->readHead = stream_fifo_open ('temp'.$this->chatRoom.'write.txt', 'r');
+			}
 	
 		}
 
 		public function receive () {
-			
-			$msgReceived = fread($readHead, $msgSize);
+
+			$result = fread($this->readHead, $this->msgSize);
+
+			fclose($this->writeHead);
+
+			fclose($this->readHead);
+		
+			echo $result;
 		}
 
-		public function send () {
+		public function send ($msgToSend) {
 
-			fwrite($writeHead, $msgToSend);
+			fwrite($this->writeHead, $msgToSend);
+
+			fclose($this->writeHead);
+
+			fclose($this->readHead);
 		}
 
 		public function clear () {
 
-			$msgToSend = '';
+			unlink($this->writeHead);
 
-			$msgReceived = '';
+			unlink($this->readHead);
+
+			echo 'chat history cleared';
 		}
 	}
 
@@ -73,13 +71,26 @@
 
 	$_msgSize = $_REQUEST["msgSize"];
 
-	$chatObj = new FIFOCommunication($_chatRoom, 2);
+	$_type = $_REQUEST["type"];
 
-	//echo $_chatRoom.$_msgSize.$fifo;
-	
-	$chatObj->send('Hi I am ezudheen');
+	$_action = $_REQUEST["action"];
 
-	//$result = $chatObj->receive();
+	$_message = $_REQUEST["message"];
 
-	echo $result;
+	$chatObj = new FIFOCommunication($_chatRoom, $_msgSize, $_type);
+
+	if ($_action === "send") {
+
+		$chatObj->send($_message);
+
+		echo 'message send';
+
+	} else if ($_action === "recieve") {
+
+		$chatObj->receive();
+
+	} else if ($_action === "clear") {
+
+		$chatObj->clear();
+	}
 ?>

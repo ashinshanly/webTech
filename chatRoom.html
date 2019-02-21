@@ -5,18 +5,41 @@
 
 	<body>
 
-		<p><b>Create a new Chat Room</b></p>
+		<p><b>An anonymous chat room</b></p>
 
 		<form>
-			Name of the Chat Room: <input name="chatRoom" type="text">
+			<div>
+			
+				Name of the Chat Room: <input name="chatRoom" type="text">
 
-			Size of the message: <input name="msgSize" type="text">
+				Size of the message: <input name="msgSize" type="text">
 
-			<button type="button" onclick="creatChatRoom (chatRoom.value, Number(msgSize.value))">Create!</button>
+			</div>
 
-		</form>
+			<div>
 
-		<p>Status: <span id="status"></span></p>
+				Chat Type: <input name="chatType" type="text">
 
+				Massage To Send: <input name="msgToSend" type="text">
+
+			</div>
+
+			<div>
+
+				<button type="button" onclick="send (chatRoom.value.toString(), chatType.value.toString(), msgToSend.value.toString())">Send</button>
+
+				<button type="button" onclick="receive (chatRoom.value.toString(), Number(msgSize.value), chatType.value.toString())">Receive</button>
+
+				<button type="button" onclick="clearHistory (chatRoom.value.toString(), chatType.value.toString())">Clear history</button>
+
+			</div>
+
+			<div>
+
+				<p>Status of the chat:  <span id="status"></span></p>
+
+				<p>Massage recieved:  <span id="msgReceived"></span></p>
+			</div>
+		</form> 
 	</body>
 </html> 
