@@ -16,7 +16,7 @@
 
 		public $writeHead;   	
 
-		public function __construct ($_chatRoom = NULL, $_msgSize = 0, $_type = NULL) {
+		public function __construct ($_chatRoom = NULL, $_msgSize = 0, $_type = NULL, $_action = NULL) {
 
 			$this->chatRoom = $_chatRoom;
 			
@@ -24,15 +24,25 @@
 
 			if ($_type === "primary") {
 
-				$this->writeHead = stream_fifo_open ('temp'.$this->chatRoom.'write.txt', 'w');
+				if ($_action === "send") {
 
-				$this->readHead = stream_fifo_open ('temp'.$this->chatRoom.'read.txt', 'r');
+					$this->writeHead = stream_fifo_open ('temp'.$this->chatRoom.'write.txt', 'w');
+
+				} else if ($_action === "recieve"){
+
+					$this->readHead = stream_fifo_open ('temp'.$this->chatRoom.'read.txt', 'r');
+				}
 
 			} else {
 
-				$this->writeHead = stream_fifo_open ('temp'.$this->chatRoom.'read.txt', 'w');
+				if ($_action === "send") {
 
-				$this->readHead = stream_fifo_open ('temp'.$this->chatRoom.'write.txt', 'r');
+					$this->writeHead = stream_fifo_open ('temp'.$this->chatRoom.'read.txt', 'w');
+
+				} else if ($_action === "recieve"){
+
+					$this->readHead = stream_fifo_open ('temp'.$this->chatRoom.'write.txt', 'r');
+				}
 			}
 	
 		}
@@ -59,9 +69,9 @@
 
 		public function clear () {
 
-			unlink($this->writeHead);
+			unlink('temp'.$this->chatRoom.'write.txt');
 
-			unlink($this->readHead);
+			unlink('temp'.$this->chatRoom.'read.txt');
 
 			echo 'chat history cleared';
 		}
@@ -77,7 +87,7 @@
 
 	$_message = $_REQUEST["message"];
 
-	$chatObj = new FIFOCommunication($_chatRoom, $_msgSize, $_type);
+	$chatObj = new FIFOCommunication($_chatRoom, $_msgSize, $_type, $_action);
 
 	if ($_action === "send") {
 
