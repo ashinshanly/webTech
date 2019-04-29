@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    	<meta charset="UTF-8">
+    	<title>test handle response</title>
+</head>
+<body>
+	<p id="demo"></p>
+	<script>
+		document.getElementById("demo").innerHTML = "Working started";
+        	var xmlhttp = new XMLHttpRequest();
+        	xmlhttp.open("POST", "xmlResponse.php", true);
+        	var xmlDoc;
+        	xmlhttp.onreadystatechange = function() {
+        	    	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            			xmlDoc = xmlhttp.responseXML;
+            			console.log(xmlDoc);
+				document.getElementById("demo").innerHTML = 
+    						xmlDoc.getElementsByTagName("body")[0].childNodes[0].nodeValue;
+            		}
+        	};
+        	xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+
+		var xml = "<?xml version='1.0' encoding='UTF-8'?><note><to> Tove </to><from> Jani </from><heading> Reminder </heading><body> Don't forget me this weekend! </body></note>";
+
+        	xmlhttp.send(xml);
+    	</script>
+</body>
+</html>
+        
